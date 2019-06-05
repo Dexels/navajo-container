@@ -26,6 +26,8 @@ jobs:
           rm *.zip
       - persist_to_workspace:
           root: ~/repo
+          paths:
+            - .
   package_navajo:
     machine:
       image: circleci/classic:edge
