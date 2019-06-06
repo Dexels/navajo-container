@@ -27,7 +27,7 @@ jobs:
       - persist_to_workspace:
           root: ~/repo
           paths:
-            - .
+            - Dockerfile
   package_navajo:
     machine:
       image: circleci/classic:edge
