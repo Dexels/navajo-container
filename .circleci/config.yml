@@ -11,6 +11,7 @@ jobs:
       JVM_OPTS: -Xmx1000m
       TERM: dumb
     steps:
+      - checkout
       - run: |
           mkdir plugins
           BRANCH=newmaven
