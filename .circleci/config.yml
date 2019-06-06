@@ -40,10 +40,11 @@ jobs:
           docker login -u $DOCKER_USER -p $DOCKER_PASS
       - run: |
           TAG=${MINORTAG}.$CIRCLE_BUILD_NUM
+          BASE_VERSION=$(curl -s "https://circleci.com/api/v1.1/project/github/Dexels/dexels-base?circle-token=${CIRCLE_TOKEN}&limit=1&offset=0&filter=successful" | jq '.[0].build_num')
           echo "Building tag: $TAG"
           cd ~/repo
           ls -l
-          docker build -t dexels/dexels-base:$TAG -t dexels/dexels-base:latest .
+          docker build --build-arg TAG=${MINORTAG}.${BASE_VERSION} -t dexels/dexels-base:$TAG -t dexels/dexels-base:latest .
           docker push dexels/dexels-base:$TAG
           docker push dexels/dexels-base:latest
 
