@@ -45,8 +45,8 @@ jobs:
           cd ~/repo
           ls -l
           docker build --build-arg TAG=${MINORTAG}.${BASE_VERSION} -t dexels/navajo-container:$TAG -t dexels/navajo-container:latest .
-          docker push navajo-container:$TAG
-          docker push navajo-container:latest
+          docker push dexels/navajo-container:$TAG
+          docker push dexels/navajo-container:latest
 
 workflows:
   version: 2
