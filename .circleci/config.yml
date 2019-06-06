@@ -44,7 +44,7 @@ jobs:
           echo "Building tag: $TAG"
           cd ~/repo
           ls -l
-          docker build --build-arg TAG=${MINORTAG}.${BASE_VERSION} -t dexels/dexels-base:$TAG -t dexels/dexels-base:latest .
+          docker build --build-arg TAG=${MINORTAG}.${BASE_VERSION} -t dexels/navajo-container:$TAG -t dexels/navajo-container:latest .
           docker push dexels/dexels-base:$TAG
           docker push dexels/dexels-base:latest
 
