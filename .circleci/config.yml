@@ -42,7 +42,7 @@ jobs:
           echo "Building tag: $TAG"
           cd ~/repo
           ls -l
-          docker build -t dexels/dexels-base:$TAG -t dexels/dexels-base:latest temp
+          docker build -t dexels/dexels-base:$TAG -t dexels/dexels-base:latest .
           docker push dexels/dexels-base:$TAG
           docker push dexels/dexels-base:latest
 
@@ -54,4 +54,3 @@ workflows:
           requires:
             - build
       - build
-      
