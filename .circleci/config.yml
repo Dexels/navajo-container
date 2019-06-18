@@ -47,7 +47,7 @@ jobs:
           docker push dexels/navajo-container:latest
           curl -X POST --header "Content-Type: application/json" -d '{"branch":"master"}' "https://circleci.com/api/v1.1/project/github/dexels/navajo-sportlink/build?circle-token=${CIRCLE_TOKEN}"
           curl -X POST --header "Content-Type: application/json" -d '{"branch":"master"}' "https://circleci.com/api/v1.1/project/github/sendrato/navajo-evntzapp/build?circle-token=${CIRCLE_TOKEN}"
-          curl -X POST --header "Content-Type: application/json" -d '{"branch":"master"}' "https://circleci.com/api/v1.1/project/github/sendrato/navajo.example/build?circle-token=${CIRCLE_TOKEN}"
+          curl -X POST --header "Content-Type: application/json" -d '{"branch":"master"}' "https://circleci.com/api/v1.1/project/github/Dexels/navajo.example/build?circle-token=${CIRCLE_TOKEN}"
 workflows:
   version: 2
   workflow:
