@@ -23,6 +23,9 @@ jobs:
           curl -s "https://${NAVAJO_VERSION}-4423334-gh.circle-artifacts.com/0/streams_p2.zip?circle-token=$CIRCLE_TOKEN&branch=${BRANCH}" -o streams_p2.zip
           curl -s "https://${ENTERPRISE_VERSION}-4423339-gh.circle-artifacts.com/0/enterprise_p2.zip?circle-token=$CIRCLE_TOKEN&branch=${BRANCH}"  -o enterprise_p2.zip
           curl -s "https://${BASE_VERSION}-190362472-gh.circle-artifacts.com/0/dexels-base.tgz" -o unpack/dexels_base.tgz
+          echo "downloads complete"
+          rm -rf unpack
+          mkdir unpack
           ls *.zip | xargs -I '{}' unzip -o '{}'
           rm -rf artifacts.* content.* features* *.index
           rm -f plugins/*tipi*
