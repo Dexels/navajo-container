@@ -19,6 +19,8 @@ jobs:
           NAVAJO_VERSION=$(curl -s "https://circleci.com/api/v1.1/project/github/Dexels/navajo?circle-token=${CIRCLE_TOKEN}&limit=100&offset=0&filter=successful" | jq '[.[]| select(.branch == "newmaven")][0].build_num')
           ENTERPRISE_VERSION=$(curl -s "https://circleci.com/api/v1.1/project/github/Dexels/enterprise?circle-token=${CIRCLE_TOKEN}&limit=100&offset=0&filter=successful" | jq '[.[]| select(.branch == "newmaven")][0].build_num')
           echo "versions: $BASE_VERSION - $NAVAJO_VERSION - ${ENTERPRISE_VERSION}"
+          rm -rf unpack
+          mkdir unpack
           curl -s "https://${NAVAJO_VERSION}-4423334-gh.circle-artifacts.com/0/navajo_p2.zip?circle-token=$CIRCLE_TOKEN&branch=${BRANCH}" -o navajo_p2.zip
           echo "navajo complete"
           curl -s "https://${NAVAJO_VERSION}-4423334-gh.circle-artifacts.com/0/streams_p2.zip?circle-token=$CIRCLE_TOKEN&branch=${BRANCH}" -o streams_p2.zip
@@ -27,8 +29,6 @@ jobs:
           echo "enterprise complete"
           curl -s "https://${BASE_VERSION}-190362472-gh.circle-artifacts.com/0/dexels-base.tgz" -o unpack/dexels_base.tgz
           echo "downloads complete"
-          rm -rf unpack
-          mkdir unpack
           ls *.zip | xargs -I '{}' unzip -o '{}'
           rm -rf artifacts.* content.* features* *.index
           rm -f plugins/*tipi*
