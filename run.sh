@@ -1,4 +1,57 @@
 #!/bin/bash
+rm -rf felix-cache
+export INTERACTIVE=true
+export FILE_REPOSITORY_PATH=$1
+export FILE_REPOSITORY_STORAGE=./tmp
+export FILE_REPOSITORY_TYPE=multitenant
+export FILE_REPOSITORY_DEPLOYMENT=develop
+export FILE_REPOSITORY_MONITORED=config
+export FILE_REPOSITORY_FILEINSTALL=config
+export HAZELCAST_SIMPLE=true
+
+# returns the JDK version.
+# 8 for 1.8.0_nn, 9 for 9-ea etc, and "no_java" for undetected
+jdk_version() {
+  local result
+  local java_cmd
+  if [[ -n $(type -p java) ]]
+  then
+    java_cmd=java
+  elif [[ (-n "$JAVA_HOME") && (-x "$JAVA_HOME/bin/java") ]]
+  then
+    java_cmd="$JAVA_HOME/bin/java"
+  fi
+  local IFS=$'\n'
+  # remove \r for Cygwin
+  local lines=$("$java_cmd" -Xms32M -Xmx32M -version 2>&1 | tr '\r' '\n')
+  if [[ -z $java_cmd ]]
+  then
+    result=no_java
+  else
+    for line in $lines; do
+      if [[ (-z $result) && ($line = *"version \""*) ]]
+      then
+        local ver=$(echo $line | sed -e 's/.*version "\(.*\)"\(.*\)/\1/; 1q')
+        # on macOS, sed doesn't support '?'
+        if [[ $ver = "1."* ]]
+        then
+          result=$(echo $ver | sed -e 's/1\.\([0-9]*\)\(.*\)/\1/; 1q')
+        else
+          result=$(echo $ver | sed -e 's/\([0-9]*\)\(.*\)/\1/; 1q')
+        fi
+      fi
+    done
+  fi
+  echo "$result"
+}
+java_version="$(jdk_version)"
+if [ "$java_version" -lt "11" ]
+then
+  echo "newer java required"
+  exit
+fi
+echo $v
+
 export flag="-Dfile.encoding=UTF-8 -XX:+UnlockExperimentalVMOptions -XX:+UnlockDiagnosticVMOptions -XX:NativeMemoryTracking=summary -XX:+PrintNMTStatistics"
 # Set UseCGroupMemoryLimitForHeap options if required
 if [ ! -z "$GCTHREADSSIZE" ] && [[ $GCTHREADSSIZE =~ ^-?[0-9]+$ ]]; then
@@ -36,7 +89,7 @@ if [ ! -z "$startflags" ]; then
   flag+=" $startflags"
 fi
 if [ -z "$LOGAPPENDERS" ]; then
-  export LOGAPPENDERS=out
+  export LOGAPPENDERS=stdout
 fi
 if [ -z "$INTERACTIVE" ]; then
   export NONINTERACTIVE='-Dgosh.args=--nointeractive'
@@ -52,5 +105,6 @@ else
 fi
 
 rm -rf felix/felix-cache/*
+echo "A: $NONINTERACTIVE"
 echo "Startup flags: ${flag} LOGLEVEL: ${LOGLEVEL} LOGAPPENDERS: ${LOGAPPENDERS} FELIX_OPTS: ${FELIX_OPTS}"
-exec java -DLOGLEVEL=${LOGLEVEL} -DLOGAPPENDERS=${LOGAPPENDERS} ${FELIX_OPTS} ${NONINTERACTIVE} -Dmvncache=mvncache  ${flag} -jar bin/felix.jar
+java -DLOGLEVEL=${LOGLEVEL} -DLOGAPPENDERS=${LOGAPPENDERS} ${FELIX_OPTS} ${NONINTERACTIVE} -Dmvncache=mvncache  ${flag} -jar bin/felix.jar
