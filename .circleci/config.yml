@@ -1,9 +1,6 @@
 version: 2
 jobs:
   build:
-    branch:
-      only:
-        newbuild
     docker:
       - image: circleci/openjdk:8-jdk
     working_directory: ~/repo
