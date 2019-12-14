@@ -20,8 +20,6 @@ jobs:
           mkdir navajo
           curl -s "https://${NAVAJO_VERSION}-4423334-gh.circle-artifacts.com/0/navajo_p2.zip?circle-token=$CIRCLE_TOKEN&branch=${BRANCH}" -o navajo_p2.zip
           echo "navajo complete"
-          curl -s "https://${NAVAJO_VERSION}-4423334-gh.circle-artifacts.com/0/streams_p2.zip?circle-token=$CIRCLE_TOKEN&branch=${BRANCH}" -o streams_p2.zip
-          echo "streams complete"
           curl -s "https://${ENTERPRISE_VERSION}-4423339-gh.circle-artifacts.com/0/enterprise_p2.zip?circle-token=$CIRCLE_TOKEN&branch=${BRANCH}"  -o enterprise_p2.zip
           echo "enterprise complete"
           curl -s "https://${BASE_VERSION}-190362472-gh.circle-artifacts.com/0/dexels-base.tgz" -o navajo/dexels_base.tgz
