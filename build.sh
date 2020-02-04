@@ -59,6 +59,6 @@ docker  build  --build-arg TAG=$TAG  .  -t dexels/nav:latest
 
 if [ -n "$PUSH" ]; then
     echo "$NAME: Pusing docker image to docker hub"
-    docker  push  dexels/nav:latest
+    docker  push  dexels/navajo-container-manual:latest
 fi
 
