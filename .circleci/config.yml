@@ -68,31 +68,26 @@ jobs:
             [[ $CIRCLE_BRANCH = "master" ]] && docker tag ${IMAGE}:$TAG ${IMAGE}:latest
             [[ $CIRCLE_BRANCH = "master" ]] && docker push ${IMAGE}:latest
 
-      # for now only trigger downstream builds for master
-      - when:
-          condition:
-            equal: [ "master", << pipeline.git.branch >> ]
-          steps:
-          - run:
-              name: Trigger navajo-sportlink navajo-evntzapp navajo-basic-environment build
-              command: |
-                curl -X POST \
-                  --header "Content-Type: application/json" \
-                  --header "Circle-Token: ${CIRCLE_TOKEN}" \
-                  -d '{"branch":"${CIRCLE_BRANCH}"}' \
-                  "https://circleci.com/api/v1.1/project/github/dexels/navajo-sportlink/build"
+      - run:
+          name: Trigger navajo-sportlink navajo-evntzapp navajo-basic-environment build
+          command: |
+            curl -X POST \
+              --header "Content-Type: application/json" \
+              --header "Circle-Token: ${CIRCLE_TOKEN}" \
+              -d '{"branch":"${CIRCLE_BRANCH}"}' \
+              "https://circleci.com/api/v1.1/project/github/dexels/navajo-sportlink/build"
 
-                [[ $CIRCLE_BRANCH = "master" ]] && curl -X POST \
-                  --header "Content-Type: application/json" \
-                  --header "Circle-Token: ${CIRCLE_TOKEN}" \
-                  -d '{"branch":""${CIRCLE_BRANCH}"}' \
-                  "https://circleci.com/api/v1.1/project/github/sendrato/navajo-evntzapp/build"
+            [[ $CIRCLE_BRANCH = "master" ]] && curl -X POST \
+              --header "Content-Type: application/json" \
+              --header "Circle-Token: ${CIRCLE_TOKEN}" \
+              -d '{"branch":""${CIRCLE_BRANCH}"}' \
+              "https://circleci.com/api/v1.1/project/github/sendrato/navajo-evntzapp/build"
 
-                [[ $CIRCLE_BRANCH = "master" ]] && curl -X POST \
-                  --header "Content-Type: application/json" \
-                  --header "Circle-Token: ${CIRCLE_TOKEN}" \
-                  -d '{"branch":""${CIRCLE_BRANCH}"}' \
-                  "https://circleci.com/api/v1.1/project/github/Dexels/navajo-basic-environment/build"
+            [[ $CIRCLE_BRANCH = "master" ]] && curl -X POST \
+              --header "Content-Type: application/json" \
+              --header "Circle-Token: ${CIRCLE_TOKEN}" \
+              -d '{"branch":""${CIRCLE_BRANCH}"}' \
+              "https://circleci.com/api/v1.1/project/github/Dexels/navajo-basic-environment/build"
 
 workflows:
   version: 2
