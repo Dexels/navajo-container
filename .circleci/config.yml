@@ -1,4 +1,4 @@
-version: 2.1
+version: 2
 jobs:
   build:
     docker:
@@ -23,11 +23,11 @@ jobs:
             rm -rf navajo
             mkdir navajo
             curl -L -s "https://${NAVAJO_VERSION}-4423334-gh.circle-artifacts.com/0/navajo_p2.zip?circle-token=${CIRCLE_TOKEN}&branch=${CIRCLE_BRANCH}" -o navajo_p2.zip
-            echo "navajo complete"
+            echo "Fetch Navajo $NAVAJO_VERSION complete"
             curl -L -s "https://${ENTERPRISE_VERSION}-4423339-gh.circle-artifacts.com/0/enterprise_p2.zip?circle-token=${CIRCLE_TOKEN}&branch=${CIRCLE_BRANCH}"  -o enterprise_p2.zip
-            echo "enterprise complete"
+            echo "Fetch Enterprise $NAVAJO_VERSION complete"
             curl -L -s "https://${BASE_VERSION}-190362472-gh.circle-artifacts.com/0/dexels-base.tgz?circle-token=${CIRCLE_TOKEN}&branch=${CIRCLE_BRANCH}" -o navajo/dexels_base.tgz
-            echo "downloads complete"
+            echo "Fetch Dexels-base $BASE_VERSION complete"
             ls *.zip | xargs -I '{}' unzip -o '{}'
             rm -rf artifacts.* content.* features* *.index
             rm -f plugins/*tipi*
@@ -62,11 +62,11 @@ jobs:
             echo "Building tag: $TAG"
             cd ~/repo
             ls -l
-            docker build --build-arg TAG=${MINORTAG}.${BASE_VERSION} -t dexels/navajo-container:$TAG.
-            #docker push dexels/navajo-container:$TAG
-            #[[ $CIRCLE_BRANCH = "master" ]] && docker tag dexels/navajo-container:$TAG dexels/navajo-container:latest
-            #[[ $CIRCLE_BRANCH = "master" ]] && docker push dexels/navajo-container:latest
-
+            IMAGE=dexels/navajo-container
+            docker build --build-arg TAG=${MINORTAG}.${BASE_VERSION} -t ${IMAGE}:$TAG .
+            docker push ${IMAGE}:$TAG
+            [[ $CIRCLE_BRANCH = "master" ]] && docker tag ${IMAGE}:$TAG ${IMAGE}:latest
+            [[ $CIRCLE_BRANCH = "master" ]] && docker push ${IMAGE}:latest
 
       # for now only trigger downstream builds for master
       - when:
@@ -79,24 +79,24 @@ jobs:
                 curl -X POST \
                   --header "Content-Type: application/json" \
                   --header "Circle-Token: ${CIRCLE_TOKEN}" \
-                  -d '{"branch":"master"}' \
+                  -d '{"branch":"${CIRCLE_BRANCH}"}' \
                   "https://circleci.com/api/v1.1/project/github/dexels/navajo-sportlink/build"
 
-                curl -X POST \
+                [[ $CIRCLE_BRANCH = "master" ]] && curl -X POST \
                   --header "Content-Type: application/json" \
                   --header "Circle-Token: ${CIRCLE_TOKEN}" \
-                  -d '{"branch":"master"}' \
+                  -d '{"branch":""${CIRCLE_BRANCH}"}' \
                   "https://circleci.com/api/v1.1/project/github/sendrato/navajo-evntzapp/build"
 
-                curl -X POST \
+                [[ $CIRCLE_BRANCH = "master" ]] && curl -X POST \
                   --header "Content-Type: application/json" \
                   --header "Circle-Token: ${CIRCLE_TOKEN}" \
-                  -d '{"branch":"master"}' \
+                  -d '{"branch":""${CIRCLE_BRANCH}"}' \
                   "https://circleci.com/api/v1.1/project/github/Dexels/navajo-basic-environment/build"
 
 workflows:
   version: 2
-  workflow:
+  build:
     jobs:
       - build:
           context:
