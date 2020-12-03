@@ -59,11 +59,12 @@ jobs:
             TAGSUFFIX=`[[ $CIRCLE_BRANCH = "master" ]] && echo "" || echo "-$CIRCLE_BRANCH"`
             TAG=${MINORTAG}.${CIRCLE_BUILD_NUM}${TAGSUFFIX}
             BASE_VERSION=$(curl -s "https://circleci.com/api/v1.1/project/github/Dexels/dexels-base?circle-token=${CIRCLE_TOKEN}&limit=100&offset=0&filter=successful" | jq "[.[]| select(.branch = \"${CIRCLE_BRANCH}\" and .workflows.job_name == \"build\")][0].build_num")
-            echo "Building tag: $TAG"
+            DEXELS_BASE_TAG=${MINORTAG}.${BASE_VERSION}${TAGSUFFIX}
+            echo "Building ${IMAGE}${TAG} from dexels/dexels-base:${DEXELS_BASE_TAG}"
             cd ~/repo
             ls -l
             IMAGE=dexels/navajo-container
-            docker build --build-arg TAG=${MINORTAG}.${BASE_VERSION} -t ${IMAGE}:$TAG .
+            docker build --build-arg TAG=${DEXELS_BASE_TAG} -t ${IMAGE}:$TAG .
             docker push ${IMAGE}:$TAG
             if [ $CIRCLE_BRANCH = "master" ]; then
                docker tag ${IMAGE}:$TAG ${IMAGE}:latest
