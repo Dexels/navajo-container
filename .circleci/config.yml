@@ -16,9 +16,9 @@ jobs:
           name: Fetch Navajo, Enterprise P2 Environments & Dexels-Base from CircleCI artifacts
           command: |
             mkdir plugins
-            BASE_VERSION=$(curl -s "https://circleci.com/api/v1.1/project/github/Dexels/dexels-base?circle-token=${CIRCLE_TOKEN}&limit=100&offset=0&filter=successful" | jq '[.[]| select(.branch = "${CIRCLE_BRANCH}" and .workflows.job_name == "build")][0].build_num')
-            NAVAJO_VERSION=$(curl -s "https://circleci.com/api/v1.1/project/github/Dexels/navajo?circle-token=${CIRCLE_TOKEN}&limit=100&offset=0&filter=successful" | jq '[.[]| select(.branch == "${CIRCLE_BRANCH}")][0].build_num')
-            ENTERPRISE_VERSION=$(curl -s "https://circleci.com/api/v1.1/project/github/Dexels/enterprise?circle-token=${CIRCLE_TOKEN}&limit=100&offset=0&filter=successful" | jq '[.[]| select(.branch == "${CIRCLE_BRANCH}")][0].build_num')
+            BASE_VERSION=$(curl -s "https://circleci.com/api/v1.1/project/github/Dexels/dexels-base?circle-token=${CIRCLE_TOKEN}&limit=100&offset=0&filter=successful" | jq "[.[]| select(.branch = \"${CIRCLE_BRANCH}\" and .workflows.job_name == \"build\")][0].build_num")
+            NAVAJO_VERSION=$(curl -s "https://circleci.com/api/v1.1/project/github/Dexels/navajo?circle-token=${CIRCLE_TOKEN}&limit=100&offset=0&filter=successful" | jq "[.[]| select(.branch == \"${CIRCLE_BRANCH}\")][0].build_num")
+            ENTERPRISE_VERSION=$(curl -s "https://circleci.com/api/v1.1/project/github/Dexels/enterprise?circle-token=${CIRCLE_TOKEN}&limit=100&offset=0&filter=successful" | jq "[.[]| select(.branch == \"${CIRCLE_BRANCH}\")][0].build_num")
             echo "Versions: Base: $BASE_VERSION - Navajo: $NAVAJO_VERSION - Enterprise: ${ENTERPRISE_VERSION}"
             rm -rf navajo
             mkdir navajo
@@ -58,15 +58,17 @@ jobs:
           command: |
             TAGSUFFIX=`[[ $CIRCLE_BRANCH = "master" ]] && echo "" || echo "-$CIRCLE_BRANCH"`
             TAG=${MINORTAG}.${CIRCLE_BUILD_NUM}${TAGSUFFIX}
-            BASE_VERSION=$(curl -s "https://circleci.com/api/v1.1/project/github/Dexels/dexels-base?circle-token=${CIRCLE_TOKEN}&limit=100&offset=0&filter=successful" | jq '.[]| select(.branch = "${CIRCLE_BRANCH}" and .workflows.job_name == "build")][0].build_num')
+            BASE_VERSION=$(curl -s "https://circleci.com/api/v1.1/project/github/Dexels/dexels-base?circle-token=${CIRCLE_TOKEN}&limit=100&offset=0&filter=successful" | jq ".[]| select(.branch = \"${CIRCLE_BRANCH}\" and .workflows.job_name == \"build\")][0].build_num")
             echo "Building tag: $TAG"
             cd ~/repo
             ls -l
             IMAGE=dexels/navajo-container
             docker build --build-arg TAG=${MINORTAG}.${BASE_VERSION} -t ${IMAGE}:$TAG .
             docker push ${IMAGE}:$TAG
-            [[ $CIRCLE_BRANCH = "master" ]] && docker tag ${IMAGE}:$TAG ${IMAGE}:latest
-            [[ $CIRCLE_BRANCH = "master" ]] && docker push ${IMAGE}:latest
+            if [ $CIRCLE_BRANCH = "master" ]; then
+               docker tag ${IMAGE}:$TAG ${IMAGE}:latest
+               docker push ${IMAGE}:latest
+            fi
 
       - run:
           name: Trigger navajo-sportlink navajo-evntzapp navajo-basic-environment build
