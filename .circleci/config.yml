@@ -77,20 +77,20 @@ jobs:
             curl -X POST \
               --header "Content-Type: application/json" \
               --header "Circle-Token: ${CIRCLE_TOKEN}" \
-              -d '{"branch":"${CIRCLE_BRANCH}"}' \
+              -d "{\"branch\":\"${CIRCLE_BRANCH}\"}" \
               "https://circleci.com/api/v1.1/project/github/dexels/navajo-sportlink/build"
 
             if [ $CIRCLE_BRANCH = "master" ]; then
               curl -X POST \
                 --header "Content-Type: application/json" \
                 --header "Circle-Token: ${CIRCLE_TOKEN}" \
-                -d '{"branch":""${CIRCLE_BRANCH}"}' \
+                -d "{\"branch\":\"${CIRCLE_BRANCH}\"}" \
                 "https://circleci.com/api/v1.1/project/github/sendrato/navajo-evntzapp/build"
 
               curl -X POST \
                 --header "Content-Type: application/json" \
                 --header "Circle-Token: ${CIRCLE_TOKEN}" \
-                -d '{"branch":""${CIRCLE_BRANCH}"}' \
+                -d "{\"branch\":\"${CIRCLE_BRANCH}\"}" \
                 "https://circleci.com/api/v1.1/project/github/Dexels/navajo-basic-environment/build"
             fi
 workflows:
