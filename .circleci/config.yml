@@ -72,7 +72,7 @@ jobs:
             fi
 
       - run:
-          name: Trigger navajo-sportlink navajo-evntzapp navajo-basic-environment build
+          name: Trigger navajo-sportlink navajo-evntzapp enterprise-integration-test-env build
           command: |
             curl -X POST \
               --header "Content-Type: application/json" \
