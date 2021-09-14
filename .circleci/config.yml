@@ -1,4 +1,5 @@
 version: 2
+
 jobs:
   build:
     docker:
@@ -96,7 +97,7 @@ jobs:
 
 workflows:
   version: 2
-  build:
+  main:
     jobs:
       - build:
           context:
