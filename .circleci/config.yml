@@ -1,4 +1,5 @@
 version: 2
+
 jobs:
   build:
     docker:
@@ -72,7 +73,7 @@ jobs:
             fi
 
       - run:
-          name: Trigger navajo-sportlink navajo-evntzapp navajo-basic-environment build
+          name: Trigger navajo-sportlink navajo-evntzapp enterprise-integration-test-env build
           command: |
             curl -X POST \
               --header "Content-Type: application/json" \
@@ -96,7 +97,7 @@ jobs:
 
 workflows:
   version: 2
-  build:
+  main:
     jobs:
       - build:
           context:
