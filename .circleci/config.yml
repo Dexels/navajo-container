@@ -107,4 +107,5 @@ workflows:
               only:
                 - master
                 - test
+                - sendratosports
 
